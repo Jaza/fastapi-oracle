@@ -35,3 +35,5 @@ CAMEL_TO_SNAKE_REGEX = re.compile(r"(?<!^)(?=[A-Z])")
 PACKAGE_STATE_INVALIDATED_REGEX = re.compile(
     r'existing state of package body "[^"]+" has been invalidated'
 )
+
+DEFAULT_READ_CLOB_MAX_CHUNKS = 10_000

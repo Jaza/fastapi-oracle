@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-oracle"
-version = "0.21.0"
+version = "0.22.0"
 description = "Helpers for using the python-oracledb library with the FastAPI framework."
 authors = ["Jeremy Epstein <jazepstein@gmail.com>"]
 homepage = "https://github.com/Jaza/fastapi-oracle"

@@ -4,12 +4,14 @@ import pytest
 
 from fastapi_oracle.errors import (
     CursorRecordCharacterEncodingError,
+    ReadClobMaxChunksExceededError,
     RecordAttributeCharacterEncodingError,
 )
 from fastapi_oracle.utils import (
     coll_records_as_dicts,
     cursor_rows_as_dicts,
     cursor_rows_as_gen,
+    read_clob,
     result_keys_to_lower,
 )
 
@@ -168,3 +170,43 @@ async def test_cursor_rows_as_gen_and_result_keys_to_lower():
         {"do": 111, "re": 222, "mi": 333},
         {"do": 444, "re": 555, "mi": 666},
     ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.pureunit
+async def test_read_clob():
+    clob = AsyncMock()
+    clob.getchunksize.return_value = 20
+    clob.read.side_effect = [
+        "hello world sup my n",
+        "ame is jiggy wiggy s",
+        "lim shady",
+        "",
+    ]
+
+    content = await read_clob(clob)
+
+    assert content == "hello world sup my name is jiggy wiggy slim shady"
+
+
+@pytest.mark.asyncio
+@pytest.mark.pureunit
+async def test_read_clob_max_chunks_exceeded():
+    clob = AsyncMock()
+    clob.getchunksize.return_value = 20
+    clob.read.side_effect = [
+        "hello world sup my n",
+        "ame is jiggy wiggy s",
+        "lim shady",
+        "",
+    ]
+
+    with pytest.raises(ReadClobMaxChunksExceededError) as exc_info:
+        await read_clob(
+            clob, field_name="out_content in package_foo.prBar", max_chunks=2
+        )
+
+    assert str(exc_info.value) == (
+        "Exceeded 2 max chunks (chunk size 20 bytes) while reading out_content in "
+        "package_foo.prBar"
+    )

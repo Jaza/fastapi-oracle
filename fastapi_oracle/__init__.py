@@ -28,6 +28,7 @@ from .utils import (
     coll_records_as_dicts,
     cursor_rows_as_dicts,
     cursor_rows_as_gen,
+    read_clob,
     result_keys_to_lower,
     row_keys_to_lower,
 )
@@ -58,6 +59,7 @@ __all__ = [
     "get_settings",
     "handle_db_errors",
     "pools",
+    "read_clob",
     "result_keys_to_lower",
     "row_keys_to_lower",
 ]
