@@ -144,7 +144,6 @@ async def get_db_pool(
 
 async def get_db_conn(
     pool_and_settings: tuple[AsyncConnectionPool, Settings] = Depends(get_db_pool),
-    db_call_timeout_secs: int | None = None,
 ) -> AsyncGenerator[DbPoolAndConn, None]:  # pragma: no cover
     """Get a DB connection.
 
@@ -169,9 +168,7 @@ async def get_db_conn(
 
                 conn.outputtypehandler = output_type_handler
 
-            if db_call_timeout_secs:
-                conn.call_timeout = db_call_timeout_secs * 1000
-            elif settings.db_call_timeout_secs:
+            if settings.db_call_timeout_secs:
                 conn.call_timeout = settings.db_call_timeout_secs * 1000
 
             yield DbPoolAndConn(pool=pool, conn=conn, settings=settings)
