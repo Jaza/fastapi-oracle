@@ -3,16 +3,20 @@ from typing import NamedTuple
 
 from oracledb import AsyncConnection, AsyncConnectionPool, AsyncCursor
 
+from fastapi_oracle.config import Settings
+
 
 class DbPoolAndConn(NamedTuple):
     pool: AsyncConnectionPool
     conn: AsyncConnection
+    settings: Settings
 
 
 class DbPoolConnAndCursor(NamedTuple):
     pool: AsyncConnectionPool
     conn: AsyncConnection
     cursor: AsyncCursor
+    settings: Settings
 
 
 class DbPoolKey(NamedTuple):

@@ -174,7 +174,7 @@ async def get_db_conn(
             elif settings.db_call_timeout_secs:
                 conn.call_timeout = settings.db_call_timeout_secs * 1000
 
-            yield DbPoolAndConn(pool=pool, conn=conn)
+            yield DbPoolAndConn(pool=pool, conn=conn, settings=settings)
     except (DatabaseError, RuntimeError) as ex:
         if "not connected" in f"{ex}":
             logger.warning(
@@ -206,9 +206,11 @@ async def get_db_cursor(
     This is more convenient to use than get_db_pool() or get_db_conn(), it calls those
     for you, so you can without further ado get a cursor ready to chuck a query at.
     """
-    pool, conn = pool_and_conn
+    pool, conn, settings = pool_and_conn
     async with conn.cursor() as cursor:
-        yield DbPoolConnAndCursor(pool=pool, conn=conn, cursor=cursor)
+        yield DbPoolConnAndCursor(
+            pool=pool, conn=conn, cursor=cursor, settings=settings
+        )
 
 
 async def close_db_pools():  # pragma: no cover
